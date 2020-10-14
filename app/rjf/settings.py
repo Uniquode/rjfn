@@ -27,8 +27,12 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
-MEDIA_ROOT = BASE_DIR / 'media'
+STATIC_ROOT = TOP_DIR / 'static'
+MEDIA_ROOT = TOP_DIR / 'media'
 INSTALLED_APPS = [
+    'core',
+    'cms_blocks',
+    'cms'
 ]
 SECRET_KEY = env.get('DJANGO_SECRET_KEY', 'this is not really a secret key')
 
@@ -37,7 +41,7 @@ SECRET_KEY = env.get('DJANGO_SECRET_KEY', 'this is not really a secret key')
 
 class BaseSettings:
 
-    INSTALLED_APPS = INSTALLED_APPS + [
+    INSTALLED_APPS = [
         'wagtail.contrib.forms',
         'wagtail.contrib.redirects',
         'wagtail.embeds',
@@ -59,7 +63,7 @@ class BaseSettings:
         'django.contrib.sessions',
         'django.contrib.messages',
         'django.contrib.staticfiles',
-    ]
+    ] + INSTALLED_APPS
 
     MIDDLEWARE = [
         'django.middleware.security.SecurityMiddleware',
@@ -158,8 +162,7 @@ class BaseSettings:
     # ManifestStaticFilesStorage is recommended in production, to prevent outdated
     # Javascript / CSS assets being served from cache (e.g. after a Wagtail upgrade).
     # See https://docs.djangoproject.com/en/3.1/ref/contrib/staticfiles/#manifeststaticfilesstorage
-    STATIC_ROOT = BASE_DIR / 'static'
-
+    STATIC_ROOT = STATIC_ROOT
     MEDIA_ROOT = MEDIA_ROOT
     MEDIA_URL = '/media/'
 
