@@ -3,12 +3,12 @@
 
 import os
 import sys
-import dotenv
+from utils import env
 
-dotenv.load_dotenv('../.env')
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "rjf.settings." + os.environ.get("DJANGO_MODE", "dev"))
+    env.load()
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "rjf.settings")
 
     from django.core.management import execute_from_command_line
     execute_from_command_line(sys.argv)
