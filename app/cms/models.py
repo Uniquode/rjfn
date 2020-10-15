@@ -1,23 +1,21 @@
 # -*- coding: utf-8 -*-
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
-from taggit.models import TaggedItemBase, Tag as TaggitTag
-from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, MultiFieldPanel, InlinePanel
-from wagtail.core.fields import StreamField, RichTextField
+from taggit.models import TaggedItemBase
+from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, MultiFieldPanel
+from wagtail.core.fields import StreamField
 from wagtail.core.models import Page, Orderable
-from wagtail.images.edit_handlers import ImageChooserPanel
-from wagtail.snippets.models import register_snippet
 from django.db import models
+from taggit.models import Tag as TaggitTag, TaggedItemBase
+from wagtail.snippets.models import register_snippet
+
 from cms_blocks import blocks as cmsblocks
 
 
 __all__ = (
     'CMSPage',
+    'Testimonial'
 )
-
-
-class PageTag(TaggedItemBase):
-    content_object = ParentalKey('cms.CMSPage', related_name='page_tags')
 
 
 @register_snippet
@@ -26,13 +24,15 @@ class Tag(TaggitTag):
         proxy = True
 
 
+class PageTag(TaggedItemBase):
+    content_object = ParentalKey('cms.CMSPage', related_name='page_tags')
+
+
 class AbstractCMSPage(Page):
     """
     Abstract base page for the CMS
     """
-    tags = ClusterTaggableManager(through='cms.PageTag', blank=True,
-                                  help_text='Tags used to search for this page (optional)')
-    display_title = models.BooleanField(default=True)
+    tags = ClusterTaggableManager(through=PageTag, blank=True, help_text='Optional tags used to search for this page')
 
     content_panels = [
         FieldPanel('title'),
@@ -43,13 +43,11 @@ class AbstractCMSPage(Page):
         abstract = True
 
 
-AbstractCMSPage.promote_panels = [
-    MultiFieldPanel(Page.promote_panels + [FieldPanel('display_title')], "Common page configuration"),
-]
-
-
 class CMSPage(AbstractCMSPage):
     parent_page_types = ['wagtailcore.page', 'cms.CMSPage']
+
+    display_title = models.BooleanField(default=True)
+    display_banner = models.BooleanField(default=True)
 
     body = StreamField([
         ('title',           cmsblocks.TitleBlock()),
@@ -58,22 +56,20 @@ class CMSPage(AbstractCMSPage):
         ('cta',             cmsblocks.CallToActionBlock()),
         ('table',           cmsblocks.CustomTableBlock()),
         ('richtext',        cmsblocks.RichTextWithTitleBlock()),
-        ('testimonial',     cmsblocks.TestimonialChooserBlock(
-            help_text='Select testimonial'
-        )),
-        ('large_image',     cmsblocks.LargeImageChooserBlock(
-            help_text='A large image - cropped to 1200x775',
-        )),
-        ('new_section',     cmsblocks.NewSectionBlock(
-            help_text='Insert a horizontal rule'
-        )),
+        ('testimonial',     cmsblocks.TestimonialChooserBlock(help_text='Select testimonial')),
+        ('large_image',     cmsblocks.LargeImageChooserBlock(help_text='A large image',)),
+        ('new_section',     cmsblocks.NewSectionBlock(help_text='Start a new section')),
     ], blank=True, null=True)
 
+    promote_panels = [
+        MultiFieldPanel(
+            Page.promote_panels + [
+                FieldPanel('display_title'),
+                FieldPanel('display_banner')
+            ], "Common page configuration"),
+    ]
+
     content_panels = AbstractCMSPage.content_panels + [
-        MultiFieldPanel([
-                InlinePanel('carousel_images', max_num=12, min_num=0, label='Carousel Image')
-            ], heading='Carousel Images'
-        ),
         StreamFieldPanel('body')
     ]
 
@@ -82,27 +78,15 @@ class CMSPage(AbstractCMSPage):
         verbose_name_plural = 'CMS Pages'
 
 
-class CarouselImage(Orderable):
-    RICHTEXTBLOCK_FEATURES = [
-        'bold', 'italic', 'ol', 'ul'
-    ]
+@register_snippet
+class Testimonial(models.Model):
 
-    parent_pg = ParentalKey('cms.CMSPage', related_name='carousel_images')
-    # noinspection PyUnresolvedReferences
-    carousel_image = models.ForeignKey('wagtailimages.Image', null=True, blank=True, on_delete=models.SET_NULL,
-                                       related_name='+')
-    carousel_title = models.CharField(blank=True, null=True, max_length=120,
-                                      help_text='Display title, optional (max len=120)')
-    carousel_content = RichTextField(features=RICHTEXTBLOCK_FEATURES, null=True, blank=True)
-    carousel_attribution = models.CharField(blank=True, null=True, max_length=120,
-                                            help_text='Display title, optional (max len=120)')
-    carousel_interval = models.IntegerField(blank=False, null=False, default=12000,
-                                            help_text='Keep visible for time in milliseconds')
+    quote = models.TextField(max_length=500, blank=False, null=False)
+    attribution = models.CharField(max_length=50, blank=False, null=False)
 
-    panels = [
-        ImageChooserPanel('carousel_image'),
-        FieldPanel('carousel_title'),
-        FieldPanel('carousel_content'),
-        FieldPanel('carousel_attribution'),
-        FieldPanel('carousel_interval')
-    ]
+    def __str__(self):
+        return f'{self.quote} by {self.attribution}'
+
+    class Meta:
+        verbose_name = 'Testimonial'
+        verbose_name_plural= 'Testimonials'

@@ -13,7 +13,7 @@
           </nav>
       </div>
 
-      {% with settings.ywfa_settings.ContactSettings as contact %}
+      {% with settings.cms_settings.ContactSettings as contact %}
       <div class="col-md-4 mt-4 mt-md-0">
         <h5 class="text-uppercase text-md-center star">Contact</h5>
 
@@ -45,7 +45,7 @@
 
       <div class="col-md-3 mt-4 mt-md-0">
         <h5 class="text-uppercase text-center star">Social Media</h5>
-        {% with settings.ywfa_settings.SocialMediaSettings as social %}
+        {% with settings.cms_settings.SocialMediaSettings as social %}
         <ul class="text-center socicon">
           {% if social.facebook %}<li data-toggle="tooltip" data-placement="top" data-delay="0" title="Facebook">
             <a href="{{ social.facebook }}" target="_blank">

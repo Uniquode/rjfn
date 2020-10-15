@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block metas %}
+    <meta name="twitter:image" content="{% static 'images/rjf_logo.png' %}">
+  {% block description %}
+    <meta name="description" content="Providing advice about funerals when you need it most.">
+  {% endblock description %}
+{% endblock metas %}
+
+{% block body_class %}cms{% endblock %}
+
+{% block fonts %}{% endblock fonts %}
+{% block extra_fonts %}{% endblock extra_fonts %}
+{% block global_styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'site/css/bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'site/css/rjf.css' %}">
+{% endblock global_styles %}
+
+{% block navigation %}
+  {% include 'cms/partials/_navigation.html' %}
+{% endblock navigation %}
+
+{% block content-outer-start %}<div class="container">{% endblock content-outer-start %}
+{% block content-outer-end %}</div>{% endblock content-outer-end %}
+{% block footer %}{% include 'core/partials/_footer.html' %}{% endblock footer %}
+{% block global_scripts %}
+      <script type="text/javascript" src="{% static 'site/scripts/bootstrap.js' %}"></script>
+      <script type="module" src="{% static 'site/scripts/rjf.js' %}"></script>
+{% endblock global_scripts %}
+
+

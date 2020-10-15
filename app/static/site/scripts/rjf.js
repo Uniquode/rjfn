@@ -1,7 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
 /**
  * slugify an input string
  * @param {string} str - string to transform
@@ -26,6 +22,9 @@ const slugify = (str, maxlength=0) => {
   str = str.replace(/^-|-$/g, ''); // trim leading/trailing dashes
 
   return str;
-};
+}
 
-exports.slugify = slugify;
+
+module.exports = {
+  slugify,
+}

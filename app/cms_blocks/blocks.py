@@ -166,7 +166,7 @@ class RichTextWithTitleBlock(blocks.StructBlock):
 class TestimonialChooserBlock(SnippetChooserBlock):
 
     def __init__(self, **kwargs):
-        super().__init__('testimonials.Testimonial', **kwargs)
+        super().__init__('cms.Testimonial', **kwargs)
 
     class Meta:
         template = 'blocks/testimonial_block.html'
@@ -178,6 +178,7 @@ class LargeImageChooserBlock(ImageChooserBlock):
 
     class Meta:
         template = 'blocks/large_image_block.html'
+        label = "Large Image"
 
 
 class NewSectionBlock(blocks.StructBlock):
