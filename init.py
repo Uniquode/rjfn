@@ -93,10 +93,8 @@ class EnvManager:
         'POSTGRES_PASSWORD': '',
         'RDHOST': '127.0.0.1',
         'RDPORT': '',
-        'RD0': '',
-        'RD1': '',
-        'REDIS_CACHE': 'redis://${RDHOST}:${RDPORT}/${RD0}',
-        'REDIS_SESSION': 'redis://${RDHOST}:${RDPORT}/${RD1}',
+        'RDDB': '',
+        'DJANGO_REDIS_URL': 'redis://${RDHOST}:${RDPORT}/${RDB}',
         'DATABASE_URL': 'postgres://${DBUSER}:${DBPASS}@${DBHOST}:${DBPORT}/${DBNAME}',
         'DJANGO_SECRET_KEY': '',
         'DJANGO_MODE': 'dev',
@@ -266,13 +264,8 @@ class EnvManager:
             if args.rdport or not self.getvar('RDPORT'):
                 self.setvar('RDPORT', args.rdport or '6379')
 
-        if args.cache or not self.getvar('RD0'):
-            self.setvar('RD0', args.cache or 0)
-            if not args.session and not self.getvar('RD1'):
-                args.session = int(self.getvar('RD0')) + 1
-
-        if args.session or not self.getvar('RD1'):
-            self.setvar('RD1', args.session or 1)
+        if args.cache or not self.getvar('RDB'):
+            self.setvar('RDB', args.cache or 0)
 
         if self.volumes:
             if not self.getvar('EXT_ROOT'):
@@ -443,14 +436,14 @@ import dj_database_url
 CACHES = {{
     "default" : {{
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ["REDIS_CACHE"],
+        "LOCATION": os.environ["DJANGO_REDIS_URL"],
         "OPTIONS": {{
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         }}
     }},
     "sessions" : {{
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ["REDIS_SESSION"],
+        "LOCATION": os.environ["DJANGO_REDIS_URL"],
         "OPTIONS": {{
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         }}
@@ -460,10 +453,8 @@ CACHES = {{
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 
-DATABASE_URL = os.environ['DATABASE_URL']
-
 DATABASES = {{
-    'default': dj_database_url.config(default=DATABASE_URL),
+    'default': dj_database_url.config('DJANGO_DATABASE_URL'),
 }}
 
 WAGTAIL_SITE_NAME = '{app_name}'
@@ -534,8 +525,7 @@ if __name__ == '__main__':
     redis = parser.add_argument_group(title='Redis', description='cache options')
     redis.add_argument('--rdhost', '-I',                        help='redis hostname (prefer IP)')
     redis.add_argument('--rdport', '-P', type=int,              help='redis port')
-    redis.add_argument('--cache', '-c', type=int, choices=range(0, 16),   help='redis cache db # (0-15)')
-    redis.add_argument('--session', '-s', type=int, choices=range(0, 16), help='redis session db # (0-15)')
+    redis.add_argument('--rdb',    '-c', type=int, choices=range(0, 16),   help='redis db # (0-15)')
 
     parser.add_argument('command', nargs='*',                   help='(optional) command')
 

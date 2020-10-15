@@ -7,8 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "jest",
-    "build": "rollup -c rollup.config.js"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -28,10 +27,5 @@
   "dependencies": {
     "bootstrap": "^5.0.0-alpha2",
     "popper.js": "^1.16.1"
-  },
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^15.1.0",
-    "jest": "^26.5.3",
-    "rollup": "^2.29.0"
   }
 }

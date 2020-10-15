@@ -2,10 +2,9 @@
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from taggit.models import TaggedItemBase
-from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, MultiFieldPanel, InlinePanel
-from wagtail.core.fields import StreamField, RichTextField
+from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, MultiFieldPanel
+from wagtail.core.fields import StreamField
 from wagtail.core.models import Page, Orderable
-from wagtail.images.edit_handlers import ImageChooserPanel
 from django.db import models
 from taggit.models import Tag as TaggitTag, TaggedItemBase
 from wagtail.snippets.models import register_snippet
@@ -15,6 +14,7 @@ from cms_blocks import blocks as cmsblocks
 
 __all__ = (
     'CMSPage',
+    'Testimonial'
 )
 
 
@@ -43,12 +43,11 @@ class AbstractCMSPage(Page):
         abstract = True
 
 
-
-
 class CMSPage(AbstractCMSPage):
     parent_page_types = ['wagtailcore.page', 'cms.CMSPage']
 
     display_title = models.BooleanField(default=True)
+    display_banner = models.BooleanField(default=True)
 
     body = StreamField([
         ('title',           cmsblocks.TitleBlock()),
@@ -63,9 +62,12 @@ class CMSPage(AbstractCMSPage):
     ], blank=True, null=True)
 
     promote_panels = [
-        MultiFieldPanel(Page.promote_panels + [FieldPanel('display_title')], "Common page configuration"),
+        MultiFieldPanel(
+            Page.promote_panels + [
+                FieldPanel('display_title'),
+                FieldPanel('display_banner')
+            ], "Common page configuration"),
     ]
-
 
     content_panels = AbstractCMSPage.content_panels + [
         StreamFieldPanel('body')
@@ -74,3 +76,17 @@ class CMSPage(AbstractCMSPage):
     class Meta:
         verbose_name = 'CMS Page'
         verbose_name_plural = 'CMS Pages'
+
+
+@register_snippet
+class Testimonial(models.Model):
+
+    quote = models.TextField(max_length=500, blank=False, null=False)
+    attribution = models.CharField(max_length=50, blank=False, null=False)
+
+    def __str__(self):
+        return f'{self.quote} by {self.attribution}'
+
+    class Meta:
+        verbose_name = 'Testimonial'
+        verbose_name_plural= 'Testimonials'

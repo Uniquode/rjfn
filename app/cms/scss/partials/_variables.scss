@@ -1,0 +1,47 @@
+@import 'functions';
+
+$color-base: #699dd7;
+$color-dark: #092e6b;
+$color-text: #05056b;
+$color-light: #bfcee2;
+$color-white: #ffffff;
+$color-soft: rgba($color-base, 0.4);
+$color-background-dark: rgba($color-dark, 0.6);
+$color-background-light: rgba($color-dark, 0.1);
+
+$color-background-nav-dark: #4073c2;
+$color-background-nav-light: #bfcee2;
+$color-background-nav: linear-gradient(to top, $color-background-nav-dark, $color-background-nav-light);
+
+$frost-white: rgba(240, 240, 255, 1);
+$hard-white: rgba(255, 255, 255, 0.9);
+$soft-white: rgba(255, 255, 255, 0.5);
+$softer-white: rgba(255, 255, 255, 0.4);
+$soft-shadow: rgba(53, 53, 53, 0.6);
+
+// Equvalent to bootstrap
+$font-size-base: 1rem !default; // Assumes the browser default, typically `16px`
+$font-size-sm: $font-size-base * .875 !default;
+$font-size-lg: $font-size-base * 1.25 !default;
+$line-height-base: 1.5 !default;
+$line-height-sm: 1.25 !default;
+$line-height-lg: 2 !default;
+
+$font-default: normal $font-size-lg 'Roboto', Helvetica, serif;
+$font-emphasis: italic $font-size-lg 'Roboto', Helvetica, serif;
+$font-heading: normal $font-size-lg 'Alex Brush', cursive, serif;
+
+$width-xl: 1200px;
+$width-lg: 992px;
+$width-md: 768px;
+$width-sm: 576px;
+
+$background-anchor: top center;
+
+// social icons
+$color-facebook: rgba(0, 11, 228, 100);
+$color-twitter: rgba(29, 155, 234, 100);
+$color-linkedin: rgba(0, 119, 181, 100);
+$color-youtube: rgba(255, 0, 0, 100);
+$color-instagram: linear-gradient(to top right, rgba(241, 148, 56, 100), rgba(204, 43, 110, 100), rgba(147, 54, 184, 100));
+
